@@ -1,7 +1,7 @@
 package com.example.calenderapp
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -59,8 +59,8 @@ fun CreateEventButton() {
     val context = LocalContext.current
     Button(
         onClick = {
-            Toast.makeText(context, "Create Event Clicked", Toast.LENGTH_SHORT).show()
-            // Implement event creation logic here
+            val intent = Intent(context, CreateEventActivity::class.java)
+            context.startActivity(intent)
         },
         modifier = Modifier.padding(8.dp)
     ) {
@@ -68,10 +68,4 @@ fun CreateEventButton() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CalenderAppTheme {
-        MainScreen()
-    }
-}
+
