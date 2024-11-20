@@ -13,10 +13,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.calenderapp.ui.theme.CalenderAppTheme
-
-class MainActivity : ComponentActivity() {
+import com.example.calenderapp.CalendarAdapter
+//ComponentActivity()
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        /*
         setContent {
             CalenderAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -27,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     MainScreen()
                 }
             }
-        }
+        }*/
     }
 }
 
