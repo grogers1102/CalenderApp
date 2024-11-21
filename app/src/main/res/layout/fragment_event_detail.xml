@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -30,7 +31,7 @@
         android:id="@+id/event_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Wednesday, May 11, 2022" />
+        android:text="Select Date" />
 
     <TextView
         android:layout_width="match_parent"
@@ -46,12 +47,11 @@
         android:layout_height="wrap_content"
         android:importantForAutofill="no"
         android:inputType="text"
-        android:text="Enter notes" />
+        android:hint="Enter notes" />
 
     <Button
         android:id="@+id/event_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit" />
-
 </LinearLayout>
