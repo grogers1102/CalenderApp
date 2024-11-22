@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/eventDetailFragment"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -36,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="8sp"
-        android:text="Additional Notes"
+        android:text="Additional Details"
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -46,7 +48,7 @@
         android:layout_height="wrap_content"
         android:importantForAutofill="no"
         android:inputType="text"
-        android:text="Enter notes" />
+        android:text="Enter details" />
 
     <Button
         android:id="@+id/event_submit"
