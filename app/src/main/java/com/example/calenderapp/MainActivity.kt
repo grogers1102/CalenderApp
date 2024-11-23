@@ -2,8 +2,10 @@ package com.example.calenderapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,6 +21,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val createEventButton: Button = findViewById(R.id.createEventButton)
+        createEventButton.setOnClickListener {
+            val intent = Intent(this, CreateEventActivity::class.java)
+            startActivity(intent)
+        }
         /*
         setContent {
             CalenderAppTheme {

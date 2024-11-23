@@ -22,7 +22,6 @@ class CreateEventActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalenderAppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -84,7 +83,6 @@ fun EventCreationScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                // Handle event creation logic here
                 Toast.makeText(context, "Event Created", Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier.fillMaxWidth()
