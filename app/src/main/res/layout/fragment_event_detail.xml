@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/eventDetailFragment"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
     <TextView
         android:layout_width="match_parent"
@@ -31,13 +32,13 @@
         android:id="@+id/event_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Date" />
+        android:text="Wednesday, May 11, 2022" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="8sp"
-        android:text="Additional Notes"
+        android:text="Additional Details"
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -47,11 +48,12 @@
         android:layout_height="wrap_content"
         android:importantForAutofill="no"
         android:inputType="text"
-        android:hint="Enter notes" />
+        android:text="Enter details" />
 
     <Button
         android:id="@+id/event_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit" />
+
 </LinearLayout>
