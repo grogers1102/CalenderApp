@@ -46,8 +46,8 @@
         android:contentDescription="Previous"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/rightArrowButton"
-        app:layout_marginEnd="6dp"
-        app:layout_marginTop="12dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Right arrow button -->
@@ -60,7 +60,7 @@
         app:iconGravity="end"
         android:contentDescription="Next"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_marginTop="12dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
