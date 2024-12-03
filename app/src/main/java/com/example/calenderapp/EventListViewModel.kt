@@ -20,7 +20,7 @@ class EventListViewModel: ViewModel() {
             }
         }
     }
-    suspend fun addCrime(event: Event){
+    suspend fun addEvent(event: Event){
         eventRepository.addEvent(event)
     }
 }

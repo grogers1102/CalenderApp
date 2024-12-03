@@ -11,13 +11,28 @@
         android:name="com.example.calenderapp.EventListFragment"
         android:label="EventListFragment"
         tools:layout="@layout/fragment_event_list">
+        <action
+            android:id="@+id/show_event_detail"
+            app:destination="@id/eventDetailFragment"/>
     </fragment>
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="com.example.calenderapp.EventDetailFragment"
         android:label="EventDetailFragment"
         tools:layout="@layout/fragment_event_detail">
-
+        <argument
+            android:name="eventId"
+            app:argType="java.util.UUID"/>
+        <action
+            android:id="@+id/select_date"
+            app:destination="@id/datePickerFragment"/>
     </fragment>
-
+    <dialog
+        android:id="@+id/datePickerFragment"
+        android:name="com.example.calenderapp.DatePickerFragment"
+        android:label="DatePickerFragment" >
+        <argument
+            android:name="eventDate"
+            app:argType="java.util.Date"/>
+    </dialog>
 </navigation>

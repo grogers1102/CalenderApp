@@ -41,4 +41,18 @@ class EventListFragment: Fragment(){
         binding.eventRecyclerView.layoutManager = LinearLayoutManager(context)
         return binding.root
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+    private fun showNewEvent(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            val newEvent = Event(id = UUID.randomUUID(), title = "", description = "", date = Date())
+            eventListViewModel.addEvent(newEvent)
+            //findNavController().navigate(
+                //EventListFragmentDirections.showEventDetail(newEvent.id)
+            //)
+        }
+    }
 }
