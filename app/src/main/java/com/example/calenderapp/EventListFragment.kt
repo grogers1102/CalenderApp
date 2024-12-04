@@ -41,4 +41,38 @@ class EventListFragment: Fragment(){
         binding.eventRecyclerView.layoutManager = LinearLayoutManager(context)
         return binding.root
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                eventListViewModel.events.collect{ events ->
+                    binding.eventRecyclerView.adapter =
+                        EventListAdapter(events){ eventId ->
+                            findNavController().navigate(
+                                EventListFragmentDirections.showEventDetail(eventId)
+                            )
+                        }
+                }
+            }
+        }
+    }
+    /*override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        //inflater.inflate()
+    }*/
+    private fun showNewEvent(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            val newEvent = Event(id = UUID.randomUUID(), title = "", description = "", date = Date())
+            eventListViewModel.addEvent(newEvent)
+            findNavController().navigate(
+                EventListFragmentDirections.showEventDetail(newEvent.id)
+            )
+        }
+    }
 }

@@ -11,16 +11,13 @@ class CalendarAdapter(private val calendarData: List<Pair<DayOfWeek, Int?>>):
     class CalendarViewHolder(val view: View): RecyclerView.ViewHolder(view){
         val dayTextView: TextView = view.findViewById((R.id.dayTextView))
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.calendar_day_item, parent, false)
         return CalendarViewHolder(view)
     }
-
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val dayData = calendarData[position]
         holder.dayTextView.text = dayData.second?.toString() ?: ""
     }
-
     override fun getItemCount() = calendarData.size
 }
