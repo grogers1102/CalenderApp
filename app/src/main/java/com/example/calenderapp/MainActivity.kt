@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var calendarRecyclerView: RecyclerView
     private val viewModel: CalendarViewModel by viewModels()
 
-    // Declare CalendarView and TextView
     private lateinit var calendar: CalendarView
     private lateinit var dateView: TextView
 
@@ -36,9 +35,6 @@ class MainActivity : AppCompatActivity() {
         dateView.text = "Today's date is $formattedDate"
 
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
-
-        val leftArrowButton: Button = findViewById(R.id.leftArrowButton)
-        val rightArrowButton: Button = findViewById(R.id.rightArrowButton)
 
         calendarRecyclerView.layoutManager = GridLayoutManager(this, 7)
 
