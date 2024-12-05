@@ -82,6 +82,7 @@ class EventDetailFragment: Fragment() {
                 Toast.makeText(requireContext(), "Event saved!", Toast.LENGTH_SHORT).show()
                 parentFragmentManager.popBackStack()
             } catch (e: Exception) {
+                e.printStackTrace()
                 Toast.makeText(requireContext(), "Error saving event: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }

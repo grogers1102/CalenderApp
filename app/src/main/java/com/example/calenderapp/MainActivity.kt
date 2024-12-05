@@ -38,16 +38,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Find your views
         calendar = findViewById(R.id.calendar)
         dateView = findViewById(R.id.date)
 
-        // Hide the calendar initially when opening EventDetailFragment
         val createEventButton: Button = findViewById(R.id.createEventButton)
         createEventButton.setOnClickListener {
-            // Hide the calendar when navigating to EventDetailFragment
             calendar.visibility = View.GONE
-            dateView.visibility = View.GONE // Hide the date text as well if needed
+            dateView.visibility = View.GONE
 
             val eventDetailFragment = EventDetailFragment()
             val transaction = supportFragmentManager.beginTransaction()
@@ -56,11 +53,9 @@ class MainActivity : AppCompatActivity() {
             transaction.commit()
         }
 
-        // RecyclerView setup (for events)
         val recyclerView: RecyclerView = findViewById(R.id.event_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Calendar view setup
         calendar.isEnabled = true
         val today = LocalDate.now()
         val formattedDate = today.format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
@@ -76,9 +71,13 @@ class MainActivity : AppCompatActivity() {
         calendarRecyclerView.adapter = CalendarAdapter(calendarData)
     }
 
-    // Ensure calendar is visible when navigating back
     override fun onBackPressed() {
-        super.onBackPressed()
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
+
         calendar.visibility = View.VISIBLE
         dateView.visibility = View.VISIBLE
     }
