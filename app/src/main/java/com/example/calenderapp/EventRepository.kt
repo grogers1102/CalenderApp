@@ -1,6 +1,7 @@
 package com.example.calenderapp
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import database.EventDatabase
 import database.migration_1_2
@@ -8,11 +9,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 import java.util.UUID
 
 private const val DATABASE_NAME = "event-database"
-class EventRepository private constructor(context: Context, private val coroutineScope: CoroutineScope = GlobalScope){
+
+class EventRepository private constructor(context: Context, private val coroutineScope: CoroutineScope = GlobalScope) {
     private val database: EventDatabase = Room
         .databaseBuilder(
             context.applicationContext,
@@ -26,26 +27,30 @@ class EventRepository private constructor(context: Context, private val coroutin
 
     suspend fun getEvent(id: UUID): Event = database.eventDao().getEvent(id)
 
-    fun updateEvent(event: Event){
-        coroutineScope.launch{
+    fun updateEvent(event: Event) {
+        coroutineScope.launch {
             database.eventDao().updateEvent(event)
         }
-
     }
-    suspend fun addEvent(event: Event){
+
+    suspend fun addEvent(event: Event) {
         database.eventDao().addEvent(event)
     }
-    companion object{
+
+    companion object {
         private var INSTANCE: EventRepository? = null
 
-        fun initialize(context: Context){
-            if(INSTANCE == null){
+        fun initialize(context: Context) {
+            if (INSTANCE == null) {
                 INSTANCE = EventRepository(context)
+                Log.d("EventRepository", "EventRepository initialized")
+            } else {
+                Log.d("EventRepository", "EventRepository already initialized")
             }
         }
-        fun get(): EventRepository{
-            return INSTANCE ?:
-            throw IllegalStateException("EventRepository must be initialized")
+
+        fun get(): EventRepository {
+            return INSTANCE ?: throw IllegalStateException("EventRepository must be initialized")
         }
     }
 }

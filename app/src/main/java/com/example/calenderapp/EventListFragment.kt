@@ -1,11 +1,7 @@
 package com.example.calenderapp
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -20,10 +16,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
-class EventListFragment: Fragment(){
+
+class EventListFragment : Fragment() {
     private var _binding: FragmentEventListBinding? = null
     private val binding
-        get() = checkNotNull(_binding){
+        get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
         }
     private val eventListViewModel: EventListViewModel by viewModels()
@@ -32,6 +29,7 @@ class EventListFragment: Fragment(){
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,29 +47,26 @@ class EventListFragment: Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycleScope.launch{
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                eventListViewModel.events.collect{ events ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                eventListViewModel.events.collect { events ->
                     binding.eventRecyclerView.adapter =
-                        EventListAdapter(events){ eventId ->
+                        EventListAdapter(events) { eventId ->
                             findNavController().navigate(
-                                EventListFragmentDirections.showEventDetail(eventId)
+                                EventListFragmentDirections.actionEventListFragmentToEventDetailFragment(eventId)
                             )
                         }
                 }
             }
         }
     }
-    /*override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        //inflater.inflate()
-    }*/
-    private fun showNewEvent(){
+
+    private fun showNewEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             val newEvent = Event(id = UUID.randomUUID(), title = "", description = "", date = Date())
             eventListViewModel.addEvent(newEvent)
             findNavController().navigate(
-                EventListFragmentDirections.showEventDetail(newEvent.id)
+                EventListFragmentDirections.actionEventListFragmentToEventDetailFragment(newEvent.id)
             )
         }
     }

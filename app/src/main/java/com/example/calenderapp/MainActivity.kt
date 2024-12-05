@@ -2,29 +2,26 @@ package com.example.calenderapp
 
 import android.os.Bundle
 import android.widget.Button
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.calenderapp.ui.theme.CalenderAppTheme
-import com.example.calenderapp.CalendarAdapter
 import java.time.LocalDate
 
-// ComponentActivity()
 class MainActivity : AppCompatActivity() {
     private lateinit var calendarRecyclerView: RecyclerView
+    private lateinit var navController: NavController
     private val viewModel: CalendarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Find NavHostFragment and NavController
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        navController = navHostFragment.navController
 
         // Find RecyclerView in the layout
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
@@ -46,34 +43,11 @@ class MainActivity : AppCompatActivity() {
         // Set the adapter with the data
         calendarRecyclerView.adapter = CalendarAdapter(calendarData)
 
-        /*
-        setContent {
-            CalenderAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
-            }
+        // Find the createEventButton in the layout
+        val createEventButton: Button = findViewById(R.id.createEventButton)
+        createEventButton.setOnClickListener {
+            // Navigate to EventDetailFragment
+            navController.navigate(R.id.action_eventListFragment_to_eventDetailFragment)
         }
-        */
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CalenderAppTheme {
-        Greeting("Android")
     }
 }
