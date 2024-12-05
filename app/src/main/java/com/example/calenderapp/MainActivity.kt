@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.calenderapp.ui.theme.CalenderAppTheme
 import com.example.calenderapp.CalendarAdapter
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class MainActivity : AppCompatActivity() {
     private lateinit var calendarRecyclerView: RecyclerView
@@ -26,8 +27,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         calendar = findViewById(R.id.calendar)
+        dateView = findViewById(R.id.date)
 
         calendar.isEnabled = false
+
+        val today = LocalDate.now()
+        val formattedDate = today.format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
+        dateView.text = "Today's date is $formattedDate"
 
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
 
