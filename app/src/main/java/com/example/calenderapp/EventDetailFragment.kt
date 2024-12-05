@@ -16,22 +16,31 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.coroutines.launch
 import android.text.format.DateFormat
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.doOnLayout
 import androidx.core.widget.doOnTextChanged
+import androidx.room.Room
+import database.EventDatabase
 import java.io.File
 import java.util.Date
+import java.util.UUID
 
 class EventDetailFragment: Fragment() {
 
     private var _binding : FragmentEventDetailBinding? = null
-    private val binding
-        get() = checkNotNull(_binding){
-            "Cannot access binding because it is null. Is the view visible?"
-        }
+    private val binding get() = _binding!!
+
+    private val database by lazy {
+        Room.databaseBuilder(
+            requireContext(),
+            EventDatabase::class.java,
+            "event_database"
+        ).build()
+    }
 
     private val args: EventDetailFragmentArgs by navArgs()
 
@@ -49,30 +58,38 @@ class EventDetailFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            eventTitle.doOnTextChanged{ text, _, _, _ ->
-                eventDetailViewModel.updateEvent { oldEvent ->
-                    oldEvent.copy(title = text.toString())
-                }
+
+        binding.eventSubmit.setOnClickListener {
+            val title = binding.eventTitle.text.toString()
+            val description = binding.eventDescription.text.toString()
+            val date = System.currentTimeMillis()
+
+            if (title.isNotBlank()) {
+                val newEvent = Event(UUID.randomUUID(), title, description, Date(date))
+                saveEvent(newEvent)
+            } else {
+                Toast.makeText(requireContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show()
             }
-        }
-        viewLifecycleOwner.lifecycleScope.launch{
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
-                eventDetailViewModel.event.collect{ event ->
-                    event?.let{updateUi(it)}
-                }
-            }
-        }
-        setFragmentResultListener(DatePickerFragment.REQUEST_KEY_DATE){_, bundle ->
-            val newDate = bundle.getSerializable(DatePickerFragment.BUNDLE_KEY_DATE) as Date
-            eventDetailViewModel.updateEvent { it.copy(date = newDate) }
         }
     }
+
+    private fun saveEvent(event: Event) {
+        lifecycleScope.launch {
+            try {
+                database.eventDao().addEvent(event)
+                Toast.makeText(requireContext(), "Event saved!", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.popBackStack()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error saving event: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    private fun updateUi(event: Event){
+    /*private fun updateUi(event: Event){
         binding.apply {
             if(eventTitle.text.toString() != event.title){
                 eventTitle.setText(event.title)
@@ -87,5 +104,5 @@ class EventDetailFragment: Fragment() {
                 eventDescription.setText(event.description)
             }
         }
-    }
+    }*/
 }
