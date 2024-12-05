@@ -25,6 +25,7 @@ import androidx.core.view.doOnLayout
 import androidx.core.widget.doOnTextChanged
 import androidx.room.Room
 import database.EventDatabase
+import database.migration_1_2
 import java.io.File
 import java.util.Date
 import java.util.UUID
@@ -39,7 +40,8 @@ class EventDetailFragment: Fragment() {
             requireContext(),
             EventDatabase::class.java,
             "event_database"
-        ).build()
+        ).addMigrations(migration_1_2)
+            .build()
     }
 
     private val args: EventDetailFragmentArgs by navArgs()
