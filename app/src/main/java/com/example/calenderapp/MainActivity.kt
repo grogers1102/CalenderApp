@@ -19,46 +19,12 @@ import java.time.LocalDate
 
 // ComponentActivity()
 class MainActivity : AppCompatActivity() {
-    private lateinit var calendarRecyclerView: RecyclerView
-    private val viewModel: CalendarViewModel by viewModels()
+    //private lateinit var calendarRecyclerView: RecyclerView
+    //private val viewModel: CalendarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // Find RecyclerView in the layout
-        calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
-
-        // Find arrow buttons in the layout
-        val leftArrowButton: Button = findViewById(R.id.leftArrowButton)
-        val rightArrowButton: Button = findViewById(R.id.rightArrowButton)
-
-        // Set GridLayoutManager programmatically
-        calendarRecyclerView.layoutManager = GridLayoutManager(this, 7)
-
-        // Get current year and month
-        val currentYear = LocalDate.now().year
-        val currentMonth = LocalDate.now().monthValue
-
-        // Get calendar data from ViewModel
-        val calendarData = viewModel.getCalendarData(currentYear, currentMonth)
-
-        // Set the adapter with the data
-        calendarRecyclerView.adapter = CalendarAdapter(calendarData)
-
-        /*
-        setContent {
-            CalenderAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
-            }
-        }
-        */
     }
 }
 
