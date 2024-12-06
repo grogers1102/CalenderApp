@@ -32,7 +32,9 @@
         android:id="@+id/event_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Wednesday, May 11, 2022" />
+        android:hint="Wednesday, May 11, 2022" />
+
+
 
     <TextView
         android:layout_width="match_parent"
@@ -48,12 +50,18 @@
         android:layout_height="wrap_content"
         android:importantForAutofill="no"
         android:inputType="text"
-        android:text="Enter description" />
+        android:hint="Enter description" />
 
     <Button
         android:id="@+id/event_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel" />
 
 </LinearLayout>
