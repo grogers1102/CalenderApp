@@ -56,6 +56,10 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set the hint of the button to the current date
+        val currentDate = getCurrentFormattedDate()
+        binding.eventDate.hint = currentDate
+
         binding.eventDate.setOnClickListener {
             showDatePickerDialog()
         }
@@ -114,5 +118,10 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun getCurrentFormattedDate(): String {
+        val sdf = SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.getDefault())
+        return sdf.format(Date())
     }
 }
