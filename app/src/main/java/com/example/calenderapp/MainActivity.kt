@@ -1,29 +1,20 @@
 package com.example.calenderapp
 
 import android.os.Bundle
-import android.text.TextUtils.replace
 import android.view.View
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.TextView
-import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
-import com.example.calenderapp.ui.theme.CalenderAppTheme
 import com.example.calenderapp.CalendarAdapter
 import com.example.calenderapp.databinding.ActivityMainBinding
-import database.EventDao
-import database.EventDatabase
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 class MainActivity : AppCompatActivity() {
     private lateinit var calendarRecyclerView: RecyclerView
@@ -43,14 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         val createEventButton: Button = findViewById(R.id.createEventButton)
         createEventButton.setOnClickListener {
-            calendar.visibility = View.GONE
-            dateView.visibility = View.GONE
-
-            val eventDetailFragment = EventDetailFragment()
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, eventDetailFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+            navigateToEventDetailFragment()
         }
 
         val recyclerView: RecyclerView = findViewById(R.id.event_recycler_view)
@@ -71,14 +55,30 @@ class MainActivity : AppCompatActivity() {
         calendarRecyclerView.adapter = CalendarAdapter(calendarData)
     }
 
+    override fun onResume() {
+        super.onResume()
+        calendar.visibility = View.VISIBLE
+        dateView.visibility = View.VISIBLE
+    }
+
+    private fun navigateToEventDetailFragment() {
+        calendar.visibility = View.GONE
+        dateView.visibility = View.GONE
+
+        val eventDetailFragment = EventDetailFragment()
+        supportFragmentManager.commit {
+            replace(R.id.fragment_container, eventDetailFragment)
+            addToBackStack(null)
+        }
+    }
+
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
+            calendar.visibility = View.VISIBLE
+            dateView.visibility = View.VISIBLE
         } else {
             super.onBackPressed()
         }
-
-        calendar.visibility = View.VISIBLE
-        dateView.visibility = View.VISIBLE
     }
 }

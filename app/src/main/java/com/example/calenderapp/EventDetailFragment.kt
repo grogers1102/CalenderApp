@@ -75,6 +75,10 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 Toast.makeText(requireContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.cancelButton.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     private fun showDatePickerDialog() {
