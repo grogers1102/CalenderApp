@@ -14,6 +14,9 @@
         <action
             android:id="@+id/show_event_detail"
             app:destination="@id/eventDetailFragment"/>
+        <action
+            android:id="@+id/show_calendar"
+            app:destination="@id/calendarRecyclerView"/>
     </fragment>
     <fragment
         android:id="@+id/eventDetailFragment"
@@ -35,6 +38,9 @@
         <action
             android:id="@+id/show_event_list"
             app:destination="@id/eventListFragment"/>
+        <action
+            android:id="@+id/show_event_detail"
+            app:destination="@id/eventDetailFragment"/>
     </fragment>
     <dialog
         android:id="@+id/datePickerFragment"
