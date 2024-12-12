@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_events"
+        android:title="Events"
+        app:showAsAction="always"
+        android:textColor="@android:color/white" />
+
+    <item
+        android:id="@+id/action_add_event"
+        android:icon="@drawable/ic_add"
+    android:title="Add Event"
+    app:showAsAction="ifRoom" />
+</menu>
