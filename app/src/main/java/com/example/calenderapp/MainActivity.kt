@@ -17,17 +17,15 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var calendarRecyclerView: RecyclerView
-    private val viewModel: CalendarViewModel by viewModels()
-    private lateinit var binding: ActivityMainBinding
 
     private lateinit var calendar: CalendarView
     private lateinit var dateView: TextView
+    private lateinit var calendarRecyclerView: RecyclerView
+    private val viewModel: CalendarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
         calendar = findViewById(R.id.calendar)
         dateView = findViewById(R.id.date)
