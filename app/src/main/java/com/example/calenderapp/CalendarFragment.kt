@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calenderapp.databinding.CalendarGridBinding
@@ -65,6 +66,9 @@ class CalendarFragment: Fragment() {
                 Toast.makeText(context, "Clicked: $day", Toast.LENGTH_SHORT).show()
             }
         )
+        binding.switchToList.setOnClickListener{
+            findNavController().navigate(R.id.show_event_list)
+        }
     }
 
     private fun generateDaysForMonth(calendar: Calendar): List<String> {
