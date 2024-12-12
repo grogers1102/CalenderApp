@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/eventListFragment">
+    app:startDestination="@id/calendarRecyclerView">
     <fragment
         android:id="@+id/eventListFragment"
         android:name="com.example.calenderapp.EventListFragment"
@@ -26,6 +26,15 @@
         <action
             android:id="@+id/select_date"
             app:destination="@id/datePickerFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/calendarRecyclerView"
+        android:name="com.example.calenderapp.CalendarFragment"
+        android:label="Calendar"
+        tools:layout="@layout/calendar_grid">
+        <action
+            android:id="@+id/show_event_list"
+            app:destination="@id/eventListFragment"/>
     </fragment>
     <dialog
         android:id="@+id/datePickerFragment"

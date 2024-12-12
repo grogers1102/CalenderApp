@@ -26,59 +26,13 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var calendarRecyclerView: RecyclerView
-    private val viewModel: CalendarViewModel by viewModels()
-    private lateinit var binding: ActivityMainBinding
 
-    private lateinit var calendar: CalendarView
-    private lateinit var dateView: TextView
+    //private lateinit var calendarRecyclerView: RecyclerView
+    //private val viewModel: CalendarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
-        calendar = findViewById(R.id.calendar)
-        dateView = findViewById(R.id.date)
-
-        val createEventButton: Button = findViewById(R.id.createEventButton)
-        createEventButton.setOnClickListener {
-            calendar.visibility = View.GONE
-            dateView.visibility = View.GONE
-
-            val eventDetailFragment = EventDetailFragment()
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, eventDetailFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
-        }
-
-        val recyclerView: RecyclerView = findViewById(R.id.event_recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        calendar.isEnabled = true
-        val today = LocalDate.now()
-        val formattedDate = today.format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
-        dateView.text = "Today's date is $formattedDate"
-
-        calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
-        calendarRecyclerView.layoutManager = GridLayoutManager(this, 7)
-
-        val currentYear = LocalDate.now().year
-        val currentMonth = LocalDate.now().monthValue
-        val calendarData = viewModel.getCalendarData(currentYear, currentMonth)
-
-        calendarRecyclerView.adapter = CalendarAdapter(calendarData)
-    }
-
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
-        }
-
-        calendar.visibility = View.VISIBLE
-        dateView.visibility = View.VISIBLE
     }
 }
