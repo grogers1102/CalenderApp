@@ -1,5 +1,6 @@
 package com.example.calenderapp
 
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.calenderapp.databinding.CalendarDayItemBinding
 import java.time.DayOfWeek
 class CalendarHolder(val binding: CalendarDayItemBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(day: String, onDayClicked: (String) -> Unit) {
+    fun bind(day: String, onDayClicked: (String) -> Unit, isToday: Boolean) {
         binding.dayTextView.text = day
+        if (isToday) {
+            binding.dayTextView.setTextColor(Color.RED) // Highlight today in red
+        } else {
+            binding.dayTextView.setTextColor(Color.BLACK) // Default color
+        }
         binding.dayTextView.isClickable = day.isNotEmpty()
         binding.root.setOnClickListener {
             if (day.isNotEmpty()) {
@@ -24,6 +30,7 @@ class CalendarHolder(val binding: CalendarDayItemBinding) : RecyclerView.ViewHol
 
 class CalendarAdapter(
     private val days: List<String>,
+    private val currentDay: Int?,
     private val onDayClicked: (String) -> Unit
 ) : RecyclerView.Adapter<CalendarHolder>() {
 
@@ -35,7 +42,8 @@ class CalendarAdapter(
 
     override fun onBindViewHolder(holder: CalendarHolder, position: Int) {
         val day = days[position]
-        holder.bind(day, onDayClicked)
+        val isToday = day.isNotEmpty() && day.toIntOrNull() == currentDay
+        holder.bind(day, onDayClicked, isToday)
 
         // Log for debugging
         Log.d("CalendarAdapter", "Binding day: $day at position: $position")

@@ -55,11 +55,12 @@ class CalendarFragment: Fragment() {
 
         // Set the month name in the TextView
         binding.monthTextView.text = monthName
-
+        val today = calendar.get(Calendar.DAY_OF_MONTH)
         // Initialize RecyclerView here as usual
         binding.calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
         binding.calendarRecyclerView.adapter = CalendarAdapter(
             generateDaysForMonth(calendar),
+            currentDay = today,
             onDayClicked = { day ->
                 Toast.makeText(context, "Clicked: $day", Toast.LENGTH_SHORT).show()
             }
