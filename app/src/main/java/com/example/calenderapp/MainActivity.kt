@@ -81,4 +81,9 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
         }
     }
+
+    fun showCalendar() {
+        calendar.visibility = View.VISIBLE
+        dateView.visibility = View.VISIBLE
+    }
 }

@@ -71,13 +71,20 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             if (title.isNotBlank()) {
                 val newEvent = Event(UUID.randomUUID(), title, description, Date(selectedDate))
                 saveEvent(newEvent)
+
+                // Show calendar when event is submitted
+                (activity as? MainActivity)?.showCalendar()
             } else {
                 Toast.makeText(requireContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.cancelButton.setOnClickListener {
+            // Navigate back to the previous fragment (MainActivity)
             parentFragmentManager.popBackStack()
+
+            // If the parent activity is MainActivity, explicitly show the calendar
+            (activity as? MainActivity)?.showCalendar()
         }
     }
 
