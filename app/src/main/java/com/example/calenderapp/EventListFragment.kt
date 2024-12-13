@@ -43,13 +43,43 @@ class EventListFragment: Fragment(){
         super.onDestroyView()
         _binding = null
     }
-    /*private fun showNewEvent(){
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        //inflater.inflate(R.menu.fragment_event_list, menu)
+    }
+    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.new_event -> {
+                showNewEvent()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }*/
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                eventListViewModel.events.collect { events ->
+                    binding.eventListRecyclerView.adapter =
+                        EventListAdapter(events){ eventId ->
+                            findNavController().navigate(
+                                EventListFragmentDirections.showEventDetail(eventId)
+                            )
+                        }
+                }
+            }
+        }
+    }
+    private fun showNewEvent(){
         viewLifecycleOwner.lifecycleScope.launch {
             val newEvent = Event(id = UUID.randomUUID(), title = "", description = "", date = Date())
             eventListViewModel.addEvent(newEvent)
-            //findNavController().navigate(
-            //EventListFragmentDirections.showEventDetail(newEvent.id)
-            //)
+            findNavController().navigate(
+                EventListFragmentDirections.showEventDetail(newEvent.id)
+            )
         }
-    }*/
+    }
 }

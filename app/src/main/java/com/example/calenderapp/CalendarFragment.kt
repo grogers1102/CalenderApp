@@ -27,8 +27,10 @@ class CalendarFragment: Fragment() {
             "Cannot access binding because it is null. Is the view visible?"
         }
     private val calendarViewModel: CalendarViewModel by viewModels()
+    private val eventListViewModel: EventListViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -68,6 +70,18 @@ class CalendarFragment: Fragment() {
         )
         binding.switchToList.setOnClickListener{
             findNavController().navigate(R.id.show_event_list)
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                eventListViewModel.events.collect { events ->
+                    binding.eventListRecyclerView.adapter =
+                        EventListAdapter(events){ eventId ->
+                            findNavController().navigate(
+                                CalendarFragmentDirections.showEventDetail(eventId)
+                            )
+                        }
+                }
+            }
         }
     }
 
