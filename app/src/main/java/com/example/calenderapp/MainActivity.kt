@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -27,6 +29,13 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            dateView.visibility =
+                if (destination.id == R.id.calendarRecyclerView) View.VISIBLE else View.GONE
+        }
     }
 
     /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
