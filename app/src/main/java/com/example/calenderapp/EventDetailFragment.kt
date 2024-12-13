@@ -117,6 +117,14 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             try {
                 database.eventDao().addEvent(event)
                 Toast.makeText(requireContext(), "Event saved!", Toast.LENGTH_SHORT).show()
+                val eventDetails = """
+                Title: ${event.title}
+                Description: ${event.description}
+                Date: ${SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.getDefault()).format(event.date)}
+            """.trimIndent()
+
+                // Show the details message in a toast
+                Toast.makeText(requireContext(), eventDetails, Toast.LENGTH_LONG).show()
                 parentFragmentManager.popBackStack()
             } catch (e: Exception) {
                 e.printStackTrace()

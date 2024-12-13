@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/calendarRecyclerView">
+
     <fragment
         android:id="@+id/eventListFragment"
         android:name="com.example.calenderapp.EventListFragment"
@@ -18,6 +19,7 @@
             android:id="@+id/show_calendar"
             app:destination="@id/calendarRecyclerView"/>
     </fragment>
+
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="com.example.calenderapp.EventDetailFragment"
@@ -30,6 +32,7 @@
             android:id="@+id/select_date"
             app:destination="@id/datePickerFragment"/>
     </fragment>
+
     <fragment
         android:id="@+id/calendarRecyclerView"
         android:name="com.example.calenderapp.CalendarFragment"
@@ -42,6 +45,7 @@
             android:id="@+id/show_event_detail"
             app:destination="@id/eventDetailFragment"/>
     </fragment>
+
     <dialog
         android:id="@+id/datePickerFragment"
         android:name="com.example.calenderapp.DatePickerFragment"
@@ -50,4 +54,8 @@
             android:name="eventDate"
             app:argType="java.util.Date"/>
     </dialog>
+
+    <action
+        android:id="@+id/action_global_eventDetailFragment"
+        app:destination="@id/eventDetailFragment" />
 </navigation>
