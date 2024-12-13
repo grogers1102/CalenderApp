@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
 class EventListFragment: Fragment(){
+    private lateinit var dateView: TextView
     private var _binding: FragmentEventListBinding? = null
     private val binding get() = _binding!!
     private val eventListViewModel: EventListViewModel by viewModels()
@@ -46,17 +48,17 @@ class EventListFragment: Fragment(){
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        //inflater.inflate(R.menu.fragment_event_list, menu)
+        inflater.inflate(R.menu.menu_main, menu)
     }
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
-            R.id.new_event -> {
+            R.id.action_add_event -> {
                 showNewEvent()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }*/
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

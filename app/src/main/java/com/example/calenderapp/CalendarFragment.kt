@@ -2,8 +2,12 @@ package com.example.calenderapp
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,8 +21,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.calenderapp.databinding.CalendarGridBinding
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 class CalendarFragment: Fragment() {
     private var _binding: CalendarGridBinding? = null
@@ -28,11 +36,25 @@ class CalendarFragment: Fragment() {
         }
     private val calendarViewModel: CalendarViewModel by viewModels()
     private val eventListViewModel: EventListViewModel by viewModels()
+    private lateinit var dateView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_main, menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.action_add_event -> {
+                showNewEvent()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,7 +106,15 @@ class CalendarFragment: Fragment() {
             }
         }
     }
-
+    private fun showNewEvent(){
+        viewLifecycleOwner.lifecycleScope.launch{
+            val newEvent = Event(id = UUID.randomUUID(), title = "", date = Date(), description = "")
+            eventListViewModel.addEvent(newEvent)
+            findNavController().navigate(
+                CalendarFragmentDirections.showEventDetail(newEvent.id)
+            )
+        }
+    }
     private fun generateDaysForMonth(calendar: Calendar): List<String> {
         // Same logic as before to generate days with placeholders
         calendar.set(Calendar.DAY_OF_MONTH, 1)
