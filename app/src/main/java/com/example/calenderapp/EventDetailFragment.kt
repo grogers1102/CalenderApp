@@ -28,10 +28,14 @@ import java.util.Date
 import java.util.Locale
 import java.util.UUID
 
-class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
+class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerFragment.OnTimeSelectedListener {
 
     private var _binding: FragmentEventDetailBinding? = null
     private val binding get() = _binding!!
+
+    private var selectedDate: Long = System.currentTimeMillis()
+    private var selectedHour: Int = 0
+    private var selectedMinute: Int = 0
 
     private val database by lazy {
         Room.databaseBuilder(
@@ -47,9 +51,6 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val eventDetailViewModel: EventDetailViewModel by viewModels {
         EventDetailViewModelFactory(args.eventId)
     }
-
-    private var selectedDate: Long = System.currentTimeMillis()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,8 +67,17 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         val currentDate = getCurrentFormattedDate()
         binding.eventDate.hint = currentDate
 
+        val currentCalendar = Calendar.getInstance()
+        selectedHour = currentCalendar.get(Calendar.HOUR_OF_DAY)
+        selectedMinute = currentCalendar.get(Calendar.MINUTE)
+        updateEventTimeDisplay()
+
         binding.eventDate.setOnClickListener {
             showDatePickerDialog()
+        }
+
+        binding.eventTime.setOnClickListener {
+            showTimePickerDialog()
         }
 
         binding.eventSubmit.setOnClickListener {
@@ -75,7 +85,11 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             val description = binding.eventDescription.text.toString()
 
             if (title.isNotBlank()) {
-                val newEvent = Event(UUID.randomUUID(), title, description, Date(selectedDate))
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = selectedDate
+                calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                calendar.set(Calendar.HOUR_OF_DAY, selectedMinute)
+                val newEvent = Event(UUID.randomUUID(), title, description, calendar.time)
                 saveEvent(newEvent)
             } else {
                 Toast.makeText(requireContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show()
@@ -101,6 +115,30 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             day
         )
         datePickerDialog.show()
+    }
+
+    private fun updateEventTimeDisplay() {
+        val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+        calendar.set(Calendar.MINUTE, selectedMinute)
+        binding.eventTime.text = timeFormat.format(calendar.time)
+    }
+
+    private fun showTimePickerDialog() {
+        val timePickerFragment = TimePickerFragment()
+        timePickerFragment.listener = this
+        timePickerFragment.show(parentFragmentManager, "timePicker")
+    }
+
+    override fun onTimeSelected(hour: Int, minute: Int) {
+        selectedHour = hour
+        selectedMinute = minute
+        val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
+        binding.eventTime.text = timeFormat.format(calendar.time)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
