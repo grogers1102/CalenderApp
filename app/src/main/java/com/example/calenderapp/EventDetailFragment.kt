@@ -1,6 +1,7 @@
 package com.example.calenderapp
 
 import android.Manifest
+import android.R
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -18,6 +20,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.room.Room
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.example.calenderapp.databinding.FragmentEventDetailBinding
 import database.EventDatabase
 import database.migration_1_2
@@ -27,6 +33,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerFragment.OnTimeSelectedListener {
 
@@ -72,6 +79,19 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
         selectedMinute = currentCalendar.get(Calendar.MINUTE)
         updateEventTimeDisplay()
 
+        binding.recurringSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.recurrenceOptions.visibility = View.VISIBLE
+            } else {
+                binding.recurrenceOptions.visibility = View.GONE
+            }
+        }
+
+        val recurrenceOptions = arrayOf("Weekly", "Monthly", "Daily")
+        val adapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_item, recurrenceOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.recurrenceSpinner.adapter = adapter
+
         binding.eventDate.setOnClickListener {
             showDatePickerDialog()
         }
@@ -90,7 +110,13 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
                 calendar.set(Calendar.HOUR_OF_DAY, selectedMinute)
                 val newEvent = Event(UUID.randomUUID(), title, description, calendar.time)
-                saveEvent(newEvent)
+
+                val recurrence = if (binding.recurringSwitch.isChecked) {
+                    binding.recurrenceSpinner.selectedItem.toString()
+                } else {
+                    null
+                }
+                saveEvent(newEvent, recurrence)
             } else {
                 Toast.makeText(requireContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show()
             }
@@ -150,10 +176,11 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
         binding.eventDate.text = sdf.format(Date(selectedDate))
     }
 
-    private fun saveEvent(event: Event) {
+    private fun saveEvent(event: Event, recurrence: String?) {
         lifecycleScope.launch {
             try {
                 database.eventDao().addEvent(event)
+                scheduleNotification(event, recurrence)
                 Toast.makeText(requireContext(), "Event saved!", Toast.LENGTH_SHORT).show()
                 parentFragmentManager.popBackStack()
             } catch (e: Exception) {
@@ -171,6 +198,44 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
     private fun getCurrentFormattedDate(): String {
         val sdf = SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.getDefault())
         return sdf.format(Date())
+    }
+
+    private fun scheduleNotification(event: Event, recurrence: String?) {
+        val inputData = workDataOf(
+            "eventTitle" to event.title,
+            "eventDescription" to event.description
+        )
+
+        if (recurrence == null) {
+            // Schedule an immediate notification for testing purposes
+            val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.MINUTES)
+                .setInputData(inputData)  // Set the input data here
+                .build()
+
+            WorkManager.getInstance(requireContext())
+                .enqueueUniquePeriodicWork(
+                    "notification_${event.id}",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+        } else {
+            // Your existing logic for recurrence can stay
+            val workRequest = when (recurrence) {
+                "Weekly" -> PeriodicWorkRequestBuilder<NotificationWorker>(7, TimeUnit.DAYS)
+                "Monthly" -> PeriodicWorkRequestBuilder<NotificationWorker>(30, TimeUnit.DAYS)
+                "Daily" -> PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.DAYS)
+                else -> return
+            }
+                .setInputData(inputData)  // Set the input data here
+                .build()
+
+            WorkManager.getInstance(requireContext())
+                .enqueueUniquePeriodicWork(
+                    "notification_${event.id}",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+        }
     }
 
     private fun updateUi(event: Event){
