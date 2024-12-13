@@ -15,9 +15,11 @@ class CalendarHolder(val binding: CalendarDayItemBinding) : RecyclerView.ViewHol
     fun bind(day: String, onDayClicked: (String) -> Unit, isToday: Boolean) {
         binding.dayTextView.text = day
         if (isToday) {
-            binding.dayTextView.setTextColor(Color.RED) // Highlight today in red
+            binding.dayTextView.setTextColor(Color.RED)
+            binding.dayTextView.setTypeface(null, android.graphics.Typeface.BOLD)
         } else {
-            binding.dayTextView.setTextColor(Color.BLACK) // Default color
+            binding.dayTextView.setTextColor(Color.BLACK)
+            binding.dayTextView.setTypeface(null, android.graphics.Typeface.NORMAL)
         }
         binding.dayTextView.isClickable = day.isNotEmpty()
         binding.root.setOnClickListener {
