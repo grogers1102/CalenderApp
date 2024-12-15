@@ -82,35 +82,50 @@ class CalendarFragment: Fragment() {
         // Set the month name in the TextView
         binding.monthTextView.text = monthName
         val today = calendar.get(Calendar.DAY_OF_MONTH)
-        // Initialize RecyclerView here as usual
+
+        // Initialize RecyclerView here as usual with an empty adapter first
         binding.calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
-        binding.calendarRecyclerView.adapter = CalendarAdapter(
+
+        // Initialize the adapter with placeholder values
+        var calendarAdapter = CalendarAdapter(
             generateDaysForMonth(calendar),
+            eventDates = emptyList(), // Initially no events
             currentDay = today,
             onDayClicked = { day ->
                 Toast.makeText(context, "Clicked: $day", Toast.LENGTH_SHORT).show()
             }
         )
+        binding.calendarRecyclerView.adapter = calendarAdapter
 
+        // Handle the switch to the event list
         binding.switchToList.setOnClickListener {
             findNavController().navigate(R.id.show_event_list)
         }
 
+        // Collect events from the ViewModel and update the adapter dynamically
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventListViewModel.events.collect { events ->
+                    // Extract event dates
+                    val eventDates = events.map { it.date }
 
-                    // Format each event's date and time
+                    // Update the calendar adapter with the event dates
+                    calendarAdapter = CalendarAdapter(
+                        generateDaysForMonth(calendar),
+                        eventDates = eventDates, // Pass the event dates
+                        currentDay = today,
+                        onDayClicked = { day ->
+                            Toast.makeText(context, "Clicked: $day", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    binding.calendarRecyclerView.adapter = calendarAdapter
+
+                    // Optionally update the event list if displayed
                     val formattedEvents = events.map { event ->
-                        // Format the date and time separately
                         val formattedDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(event.date)
                         val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(event.date)
-
-                        // Return the event along with the formatted date and time
                         event to Pair(formattedDate, formattedTime)
                     }
-
-                    // Pass formatted events to the adapter
                     binding.eventListRecyclerView.adapter = EventListAdapter(formattedEvents) { eventId ->
                         findNavController().navigate(
                             CalendarFragmentDirections.showEventDetail(eventId)
