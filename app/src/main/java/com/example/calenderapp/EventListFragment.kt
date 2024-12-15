@@ -59,31 +59,46 @@ class EventListFragment: Fragment(){
             else -> super.onOptionsItemSelected(item)
         }
     }
+    private lateinit var adapter: EventListAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Initialize the RecyclerView and Adapter
+        binding.eventListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = EventListAdapter(emptyList()) { eventId ->
+            findNavController().navigate(
+                EventListFragmentDirections.showEventDetail(eventId)
+            )
+        }
+        binding.eventListRecyclerView.adapter = adapter
+
+        // Switch to Calendar Button
         binding.switchToCalendar.setOnClickListener {
             findNavController().navigate(R.id.show_calendar)
         }
+
+        // Collect events and update the adapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventListViewModel.events.collect { events ->
-                    binding.eventListRecyclerView.adapter =
-                        EventListAdapter(events){ eventId ->
-                            findNavController().navigate(
-                                EventListFragmentDirections.showEventDetail(eventId)
-                            )
-                        }
+                    Log.d("EventListFragment", "Fetched events: $events")
+                    adapter.updateEvents(events)
                 }
             }
         }
     }
-    private fun showNewEvent(){
-        viewLifecycleOwner.lifecycleScope.launch {
-            val newEvent = Event(id = UUID.randomUUID(), title = "", description = "", date = Date())
-            eventListViewModel.addEvent(newEvent)
-            findNavController().navigate(
-                EventListFragmentDirections.showEventDetail(newEvent.id)
-            )
-        }
+
+
+    private fun showNewEvent() {
+        // Navigate to EventDetailFragment with a placeholder or empty ID
+        findNavController().navigate(
+            EventListFragmentDirections.showEventDetail(UUID.randomUUID())
+        )
     }
+
+
+
+
+
 }

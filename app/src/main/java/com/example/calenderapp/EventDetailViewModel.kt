@@ -23,10 +23,24 @@ class EventDetailViewModel(eventId: UUID) : ViewModel() {
     fun updateEvent(onUpdate: (Event) -> Event){
         _event.update { oldEvent -> oldEvent?.let{onUpdate(it)} }
     }
-
+    fun addEvent(event: Event) {
+        viewModelScope.launch {
+            eventRepository.addEvent(event)
+        }
+    }
     override fun onCleared() {
         super.onCleared()
         event.value?.let { eventRepository.updateEvent(it) }
+    }
+    fun saveEventUpdates(updatedEvent: Event) {
+        viewModelScope.launch {
+            eventRepository.updateEvent(updatedEvent)
+        }
+    }
+    fun deleteEvent(event: Event){
+        viewModelScope.launch {
+            eventRepository.deleteEvent(event.id.toString())
+        }
     }
 }
 class EventDetailViewModelFactory(private val eventId: UUID): ViewModelProvider.Factory{

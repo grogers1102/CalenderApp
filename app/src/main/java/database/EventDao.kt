@@ -15,9 +15,13 @@ interface EventDao {
     @Query("SELECT * FROM event WHERE id=(:id)")
     suspend fun getEvent(id: UUID): Event
 
+    @Query("DELETE FROM event WHERE id = :eventId")
+    suspend fun deleteEvent(eventId: String)
+
     @Update
     suspend fun updateEvent(event: Event)
 
     @Insert
     suspend fun addEvent(event: Event)
+
 }

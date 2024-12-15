@@ -7,20 +7,26 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class EventListViewModel: ViewModel() {
+class EventListViewModel : ViewModel() {
     private val eventRepository = EventRepository.get()
-    private val _event: MutableStateFlow<List<Event>> = MutableStateFlow(emptyList())
-    val events: StateFlow<List<Event>>
-        get() = _event.asStateFlow()
+    private val _events: MutableStateFlow<List<Event>> = MutableStateFlow(emptyList())
+    val events: StateFlow<List<Event>> = _events.asStateFlow()
 
-    init{
+    init {
         viewModelScope.launch {
-            eventRepository.getEvents().collect(){
-                _event.value = it
+            eventRepository.getEvents().collect { eventList ->
+                _events.value = eventList
             }
         }
     }
-    suspend fun addEvent(event: Event){
+
+    suspend fun addEvent(event: Event) {
         eventRepository.addEvent(event)
+    }
+
+    fun deleteEvent(eventId: String) {
+        viewModelScope.launch {
+            eventRepository.deleteEvent(eventId)
+        }
     }
 }

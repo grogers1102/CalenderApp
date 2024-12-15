@@ -3,9 +3,11 @@ package com.example.calenderapp
 import android.Manifest
 import android.R
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,12 +95,37 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
         binding.recurrenceSpinner.adapter = adapter
 
         binding.eventDate.setOnClickListener {
-            showDatePickerDialog()
+            val datePicker = DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    val calendar = Calendar.getInstance()
+                    calendar.set(year, month, dayOfMonth)
+                    selectedDate = calendar.timeInMillis // Update selected date
+                    binding.eventDate.text = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault()).format(calendar.time)
+                },
+                currentCalendar.get(Calendar.YEAR),
+                currentCalendar.get(Calendar.MONTH),
+                currentCalendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
         }
 
+
         binding.eventTime.setOnClickListener {
-            showTimePickerDialog()
+            val timePicker = TimePickerDialog(
+                requireContext(),
+                { _, hourOfDay, minute ->
+                    selectedHour = hourOfDay
+                    selectedMinute = minute
+                    binding.eventTime.text = String.format("%02d:%02d", hourOfDay, minute)
+                },
+                selectedHour,
+                selectedMinute,
+                false
+            )
+            timePicker.show()
         }
+
 
         binding.eventSubmit.setOnClickListener {
             val title = binding.eventTitle.text.toString()
@@ -108,7 +135,7 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
                 val calendar = Calendar.getInstance()
                 calendar.timeInMillis = selectedDate
                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-                calendar.set(Calendar.HOUR_OF_DAY, selectedMinute)
+                calendar.set(Calendar.MINUTE, selectedMinute)
                 val newEvent = Event(UUID.randomUUID(), title, description, calendar.time)
 
                 val recurrence = if (binding.recurringSwitch.isChecked) {
@@ -116,15 +143,29 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
                 } else {
                     null
                 }
-                saveEvent(newEvent, recurrence)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    eventDetailViewModel.addEvent(newEvent) // Only create the event here
+                    Toast.makeText(requireContext(), "Event saved", Toast.LENGTH_SHORT).show()
+                    findNavController().navigateUp() // Navigate back to the list
+                }
             } else {
                 Toast.makeText(requireContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.cancelButton.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
+
+        binding.deleteButton.setOnClickListener {
+            val currentEvent = eventDetailViewModel.event.value
+            currentEvent?.let {
+                eventDetailViewModel.deleteEvent(it)
+                findNavController().navigateUp()
+            }
+        }
+
     }
 
     private fun showDatePickerDialog() {
@@ -177,18 +218,20 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
     }
 
     private fun saveEvent(event: Event, recurrence: String?) {
-        lifecycleScope.launch {
-            try {
-                database.eventDao().addEvent(event)
-                scheduleNotification(event, recurrence)
-                Toast.makeText(requireContext(), "Event saved!", Toast.LENGTH_SHORT).show()
-                parentFragmentManager.popBackStack()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(requireContext(), "Error saving event: ${e.message}", Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            eventDetailViewModel.addEvent(event) // Assuming addEvent exists in EventDetailViewModel
+            Toast.makeText(requireContext(), "Event saved", Toast.LENGTH_SHORT).show()
+
+            // Handle recurrence (if needed)
+            if (recurrence != null) {
+                Log.d("EventDetailFragment", "Recurring event: $recurrence")
             }
+
+            findNavController().navigateUp() // Navigate back to the event list
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

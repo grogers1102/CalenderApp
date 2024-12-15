@@ -1,14 +1,11 @@
 package com.example.calenderapp
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -21,26 +18,31 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         dateView = findViewById(R.id.date)
+        setupToolbar()
+        setupCurrentDate()
+        setupNavigation()
+    }
 
+    private fun setupToolbar() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+    }
+
+    private fun setupCurrentDate() {
         val today = LocalDate.now()
         val formattedDate = today.format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
         dateView.text = "Today's date is $formattedDate"
+    }
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
+    private fun setupNavigation() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             dateView.visibility =
                 if (destination.id == R.id.calendarRecyclerView) View.VISIBLE else View.GONE
         }
     }
-
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }*/
 
     override fun onResume() {
         super.onResume()
