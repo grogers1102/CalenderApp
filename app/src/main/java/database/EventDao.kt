@@ -20,4 +20,8 @@ interface EventDao {
 
     @Insert
     suspend fun addEvent(event: Event)
+
+    @Query("SELECT * FROM event")
+    suspend fun getAllEvents(): List<Event>
+
 }

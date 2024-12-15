@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,6 +95,11 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
 
         binding.eventDate.setOnClickListener {
             showDatePickerDialog()
+            /* to test database
+            lifecycleScope.launch {
+                val events = database.eventDao().getAllEvents()
+                Log.d("EventDetailFragment", "Fetched events: $events")
+            }*/
         }
 
         binding.eventTime.setOnClickListener {
