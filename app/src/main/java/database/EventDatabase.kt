@@ -19,3 +19,8 @@ val migration_1_2 = object : Migration(1, 2){
         )
     }
 }
+val migration_2_3 = object : Migration(2, 3){
+    override fun migrate(database: SupportSQLiteDatabase) {
+        //No changes
+    }
+}
