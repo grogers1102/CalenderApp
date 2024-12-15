@@ -1,6 +1,7 @@
 package com.example.calenderapp
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import database.EventDatabase
 import database.migration_1_2
@@ -23,7 +24,7 @@ class EventRepository private constructor(context: Context, private val coroutin
         .addMigrations(migration_1_2, migration_2_3)
         .build()
 
-    fun getEvents(): Flow<List<Event>> = database.eventDao().getEvents()
+    suspend fun getEvents(): Flow<List<Event>> = database.eventDao().getEvents()
 
     suspend fun getEvent(id: UUID): Event = database.eventDao().getEvent(id)
 

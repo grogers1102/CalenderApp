@@ -67,7 +67,6 @@ class EventListFragment: Fragment(){
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventListViewModel.events.collect { events ->
-                    binding.eventRecyclerView.adapter =
                         EventListAdapter(events){ eventId ->
                             findNavController().navigate(
                                 EventListFragmentDirections.showEventDetail(eventId)
@@ -79,7 +78,13 @@ class EventListFragment: Fragment(){
     }
     private fun showNewEvent(){
         viewLifecycleOwner.lifecycleScope.launch {
-            val newEvent = Event(id = UUID.randomUUID(), title = "", description = "", date = Date())
+            val newEvent = Event(
+                id = UUID.randomUUID(),
+                title = "New event",
+                description = "Lorem ipsum",
+                date = Date()
+            )
+            Log.d("EventListFragment", "Inserting new event: $newEvent")
             eventListViewModel.addEvent(newEvent)
             findNavController().navigate(
                 EventListFragmentDirections.showEventDetail(newEvent.id)
