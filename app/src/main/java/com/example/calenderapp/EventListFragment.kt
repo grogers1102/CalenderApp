@@ -61,13 +61,13 @@ class EventListFragment: Fragment(){
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.switchToCalendar.setOnClickListener {
+        /*binding.switchToCalendar.setOnClickListener {
             findNavController().navigate(R.id.show_calendar)
-        }
+        }*/
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventListViewModel.events.collect { events ->
-                    binding.eventListRecyclerView.adapter =
+                    binding.eventRecyclerView.adapter =
                         EventListAdapter(events){ eventId ->
                             findNavController().navigate(
                                 EventListFragmentDirections.showEventDetail(eventId)
