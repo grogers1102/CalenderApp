@@ -53,5 +53,9 @@
     <action
         android:id="@+id/show_calendar"
         app:destination="@id/calendarRecyclerView"/>
+    <action
+        android:id="@+id/action_eventListFragment_to_eventDetailFragment"
+        app:destination="@id/eventDetailFragment" />
+
 
 </navigation>
