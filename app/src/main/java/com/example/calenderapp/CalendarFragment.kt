@@ -90,18 +90,31 @@ class CalendarFragment: Fragment() {
                 Toast.makeText(context, "Clicked: $day", Toast.LENGTH_SHORT).show()
             }
         )
-        binding.switchToList.setOnClickListener{
+
+        binding.switchToList.setOnClickListener {
             findNavController().navigate(R.id.show_event_list)
         }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventListViewModel.events.collect { events ->
-                    binding.eventListRecyclerView.adapter =
-                        EventListAdapter(events){ eventId ->
-                            findNavController().navigate(
-                                CalendarFragmentDirections.showEventDetail(eventId)
-                            )
-                        }
+
+                    // Format each event's date and time
+                    val formattedEvents = events.map { event ->
+                        // Format the date and time separately
+                        val formattedDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(event.date)
+                        val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(event.date)
+
+                        // Return the event along with the formatted date and time
+                        event to Pair(formattedDate, formattedTime)
+                    }
+
+                    // Pass formatted events to the adapter
+                    binding.eventListRecyclerView.adapter = EventListAdapter(formattedEvents) { eventId ->
+                        findNavController().navigate(
+                            CalendarFragmentDirections.showEventDetail(eventId)
+                        )
+                    }
                 }
             }
         }
