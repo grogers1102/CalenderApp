@@ -18,3 +18,8 @@ val migration_1_2 = object : Migration(1, 2){
         database.execSQL("ALTER TABLE Event ADD COLUMN description TEXT NOT NULL DEFAULT ''")
     }
 }
+val migration_2_3 = object : Migration(2, 3){
+    override fun migrate(database: SupportSQLiteDatabase) {
+        //No changes
+    }
+}

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.room.Room
 import database.EventDatabase
 import database.migration_1_2
+import database.migration_2_3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,7 @@ class EventRepository private constructor(context: Context, private val coroutin
             EventDatabase::class.java,
             DATABASE_NAME
         )
-        .addMigrations(migration_1_2)
+        .addMigrations(migration_1_2, migration_2_3)
         .build()
 
     suspend fun getEvents(): Flow<List<Event>> = database.eventDao().getEvents()
