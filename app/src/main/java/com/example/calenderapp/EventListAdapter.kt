@@ -1,9 +1,8 @@
-package com.example.calenderapp
-
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.calenderapp.Event
 import com.example.calenderapp.databinding.ListItemEventBinding
 import java.text.SimpleDateFormat
 import java.util.Locale

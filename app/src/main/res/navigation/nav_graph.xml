@@ -50,4 +50,8 @@
             android:name="eventDate"
             app:argType="java.util.Date"/>
     </dialog>
+    <action
+        android:id="@+id/show_calendar"
+        app:destination="@id/calendarRecyclerView"/>
+
 </navigation>

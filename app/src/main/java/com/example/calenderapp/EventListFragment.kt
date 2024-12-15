@@ -1,5 +1,6 @@
 package com.example.calenderapp
 
+import EventListAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -66,26 +67,25 @@ class EventListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.switchToCalendar.setOnClickListener {
+        binding.buttonBackToCalendar.setOnClickListener {
             findNavController().navigate(R.id.show_calendar)
         }
 
+        // Observe the events from the ViewModel
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventListViewModel.events.collect { events ->
                     // Format date and time for each event
                     val formattedEvents = events.map { event ->
-                        // Format the date and time separately
                         val formattedDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(event.date)
                         val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(event.date)
-
-                        // Return the event along with the formatted date and time
                         event to Pair(formattedDate, formattedTime)
                     }
 
-                    // Set up RecyclerView with the formatted date and time
-                    binding.eventListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    binding.eventListRecyclerView.adapter = EventListAdapter(formattedEvents) { eventId ->
+                    // Set up RecyclerView with the formatted events
+                    binding.eventRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    binding.eventRecyclerView.adapter = EventListAdapter(formattedEvents) { eventId ->
+                        // Handle event click
                         findNavController().navigate(
                             EventListFragmentDirections.showEventDetail(eventId)
                         )
