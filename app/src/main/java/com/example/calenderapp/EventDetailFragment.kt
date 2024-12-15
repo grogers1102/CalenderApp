@@ -71,7 +71,6 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set the hint of the button to the current date
         val currentDate = getCurrentFormattedDate()
         binding.eventDate.hint = currentDate
 
@@ -212,36 +211,23 @@ class EventDetailFragment : Fragment(), DatePickerDialog.OnDateSetListener, Time
             "eventDescription" to event.description
         )
 
-        if (recurrence == null) {
-            // Schedule an immediate notification for testing purposes
-            val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.MINUTES)
-                .setInputData(inputData)  // Set the input data here
-                .build()
+        if (recurrence == null) { return }
 
-            WorkManager.getInstance(requireContext())
-                .enqueueUniquePeriodicWork(
-                    "notification_${event.id}",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
-        } else {
-            // Your existing logic for recurrence can stay
-            val workRequest = when (recurrence) {
-                "Weekly" -> PeriodicWorkRequestBuilder<NotificationWorker>(7, TimeUnit.DAYS)
-                "Monthly" -> PeriodicWorkRequestBuilder<NotificationWorker>(30, TimeUnit.DAYS)
-                "Daily" -> PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.DAYS)
-                else -> return
-            }
-                .setInputData(inputData)  // Set the input data here
-                .build()
-
-            WorkManager.getInstance(requireContext())
-                .enqueueUniquePeriodicWork(
-                    "notification_${event.id}",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
+        val workRequest = when (recurrence) {
+            "Weekly" -> PeriodicWorkRequestBuilder<NotificationWorker>(7, TimeUnit.DAYS)
+            "Monthly" -> PeriodicWorkRequestBuilder<NotificationWorker>(30, TimeUnit.DAYS)
+            "Daily" -> PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.DAYS)
+            else -> return
         }
+            .setInputData(inputData)
+            .build()
+
+        WorkManager.getInstance(requireContext())
+            .enqueueUniquePeriodicWork(
+                "notification_${event.id}",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
     }
 
     private fun updateUi(event: Event){

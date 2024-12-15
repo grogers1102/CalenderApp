@@ -14,8 +14,7 @@ abstract class EventDatabase: RoomDatabase(){
 }
 val migration_1_2 = object : Migration(1, 2){
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL(
-            "ALTER TABLE Event ADD COLUMN description TEXT NOT NULL DEFAULT ''"
-        )
+        database.execSQL("ALTER TABLE event ADD COLUMN title TEXT NOT NULL DEFAULT ''")
+        database.execSQL("ALTER TABLE Event ADD COLUMN description TEXT NOT NULL DEFAULT ''")
     }
 }

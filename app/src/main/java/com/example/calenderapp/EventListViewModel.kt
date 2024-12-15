@@ -1,5 +1,6 @@
 package com.example.calenderapp
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,12 +16,14 @@ class EventListViewModel: ViewModel() {
 
     init{
         viewModelScope.launch {
-            eventRepository.getEvents().collect(){
-                _event.value = it
+            eventRepository.getEvents().collect { events ->
+                Log.d("EventListViewModel", "Fetched events: $events")
+                _event.value = events
             }
         }
     }
     suspend fun addEvent(event: Event){
         eventRepository.addEvent(event)
+        _event.value = _event.value + event
     }
 }
