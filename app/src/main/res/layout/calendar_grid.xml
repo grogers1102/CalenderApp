@@ -106,28 +106,6 @@
         app:layout_constraintTop_toBottomOf="@id/daysOfWeekLayout"
         app:spanCount="7" />
 
-    <TextView
-        android:id="@+id/closeEventsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Events"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/eventListRecyclerView"
-        app:layout_constraintTop_toBottomOf="@id/calendarRecyclerView"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/eventListRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:spanCount="3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/closeEventsTextView" />
-
-
     <Button
         android:id="@+id/switch_to_list"
         android:layout_width="wrap_content"

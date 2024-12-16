@@ -126,11 +126,6 @@ class CalendarFragment: Fragment() {
                         val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(event.date)
                         event to Pair(formattedDate, formattedTime)
                     }
-                    binding.eventListRecyclerView.adapter = EventListAdapter(formattedEvents) { eventId ->
-                        findNavController().navigate(
-                            CalendarFragmentDirections.showEventDetail(eventId)
-                        )
-                    }
                 }
             }
         }
